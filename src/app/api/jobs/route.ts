@@ -6,7 +6,7 @@ import puppeteer, { Browser } from 'puppeteer';
 
 
 export async function GET(req: NextRequest) {
-  try {
+  
 
     const jobs: IJob[] = [];
 
@@ -28,9 +28,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(jobs);
 
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch jobs' }, { status: 500 });
-  }
+  
 }
 
 async function getAdsFromTotaljob(keyword: string, location: string, browser: Browser): Promise<IJob[]> {
@@ -107,36 +105,36 @@ async function getAdsFromCWJobs(keyword: string, location: string, browser: Brow
 
 }
 
-async function getAdsFromIndeed(keyword: string, location: string, browser: Browser): Promise<IJob[]> {
-  const jobs: IJob[] = [];
-  const website = 'Indeed';
-  const baseUrl = 'https://uk.indeed.com';
-  const searchUrl = `${baseUrl}/jobs?q=${keyword}&l=${location}&from=searchOnHP`;
+// async function getAdsFromIndeed(keyword: string, location: string, browser: Browser): Promise<IJob[]> {
+//   const jobs: IJob[] = [];
+//   const website = 'Indeed';
+//   const baseUrl = 'https://uk.indeed.com';
+//   const searchUrl = `${baseUrl}/jobs?q=${keyword}&l=${location}&from=searchOnHP`;
 
-  const page = await browser.newPage();
-  await page.goto(searchUrl, { waitUntil: 'networkidle2' });
+//   const page = await browser.newPage();
+//   await page.goto(searchUrl, { waitUntil: 'networkidle2' });
 
-  const content = await page.content();
-  const $ = cheerio.load(content);
+//   const content = await page.content();
+//   const $ = cheerio.load(content);
 
 
-  $('#mosaic-provider-jobcards ul > li').each((index, element) => {
-    const title = $(element).find('h2.jobTitle a').text().trim() || '';
-    const location = $(element).find('div[data-testid="text-location"]').text().trim() || '';
-    const company = $(element).find('span[data-testid="company-name"]').text().trim() || '';
-    const type = $(element).find('div.metadata').text().includes('Permanent') ? 'Permanent' : 
-                 $(element).find('div.metadata').text().includes('Contract') ? 'Contract' : '';
-    const workStyle = $(element).find('div[data-testid="text-location"]').text().includes('Hybrid') ? 'Hybrid' : 
-                      $(element).find('div[data-testid="text-location"]').text().includes('Remote') ? 'Remote' : 'Office';
-    const description = $(element).find('ul li').text().trim() || '';
-    const url = $(element).find('h2.jobTitle a').attr('href') || '';
-    const salary = $(element).find('div[data-testid="attribute_snippet_testid"]').text().trim() || '';
+//   $('#mosaic-provider-jobcards ul > li').each((index, element) => {
+//     const title = $(element).find('h2.jobTitle a').text().trim() || '';
+//     const location = $(element).find('div[data-testid="text-location"]').text().trim() || '';
+//     const company = $(element).find('span[data-testid="company-name"]').text().trim() || '';
+//     const type = $(element).find('div.metadata').text().includes('Permanent') ? 'Permanent' : 
+//                  $(element).find('div.metadata').text().includes('Contract') ? 'Contract' : '';
+//     const workStyle = $(element).find('div[data-testid="text-location"]').text().includes('Hybrid') ? 'Hybrid' : 
+//                       $(element).find('div[data-testid="text-location"]').text().includes('Remote') ? 'Remote' : 'Office';
+//     const description = $(element).find('ul li').text().trim() || '';
+//     const url = $(element).find('h2.jobTitle a').attr('href') || '';
+//     const salary = $(element).find('div[data-testid="attribute_snippet_testid"]').text().trim() || '';
 
-    jobs.push({ title, location, company, type, workStyle, description, url, salary, website });
-  });
+//     jobs.push({ title, location, company, type, workStyle, description, url, salary, website });
+//   });
 
-  return jobs;
-}
+//   return jobs;
+// }
 
 async function getAdsFromReed(keyword: string, location: string, browser: Browser): Promise<IJob[]> {
   const jobs: IJob[] = [];
